@@ -6,11 +6,11 @@
  *       (if additional are added, keep them at the very end!)
  */
 
-let chaiHttp = require("chai-http");
-let chai = require("chai");
+const chaiHttp = require("chai-http");
+const chai = require("chai");
 
-let {assert} = chai;
-let server = require("../server");
+const { assert } = chai;
+const server = require("../server");
 
 chai.use(chaiHttp);
 
@@ -70,19 +70,16 @@ suite("Functional Tests", function() {
         .query({ stock: ["goog", "fb"] })
         .end(function(err, res) {
           assert.equal(res.status, 200);
-          assert.property(res.body, "stockData");
           assert.isArray(res.body.stockData);
+
           assert.property(res.body.stockData[0], "stock");
           assert.property(res.body.stockData[0], "price");
           assert.property(res.body.stockData[0], "rel_likes");
           assert.equal(res.body.stockData[0].stock, "GOOG");
-          assert.isNumber(res.body.stockData[0].rel_likes);
-
           assert.property(res.body.stockData[1], "stock");
           assert.property(res.body.stockData[1], "price");
           assert.property(res.body.stockData[1], "rel_likes");
           assert.equal(res.body.stockData[1].stock, "FB");
-          assert.isNumber(res.body.stockData[1].rel_likes);
 
           done();
         });
@@ -95,19 +92,16 @@ suite("Functional Tests", function() {
         .query({ stock: ["goog", "fb"], like: true })
         .end(function(err, res) {
           assert.equal(res.status, 200);
-          assert.property(res.body, "stockData");
           assert.isArray(res.body.stockData);
+
           assert.property(res.body.stockData[0], "stock");
           assert.property(res.body.stockData[0], "price");
           assert.property(res.body.stockData[0], "rel_likes");
           assert.equal(res.body.stockData[0].stock, "GOOG");
-          assert.isNumber(res.body.stockData[0].rel_likes);
-
           assert.property(res.body.stockData[1], "stock");
           assert.property(res.body.stockData[1], "price");
           assert.property(res.body.stockData[1], "rel_likes");
           assert.equal(res.body.stockData[1].stock, "FB");
-          assert.isNumber(res.body.stockData[1].rel_likes);
 
           done();
         });

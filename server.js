@@ -4,6 +4,7 @@ const { expect } = require("chai");
 const cors = require("cors");
 const helmet = require("helmet");
 require("dotenv").config();
+const { MongoClient } = require("mongodb");
 
 const apiRoutes = require("./routes/api.js");
 const fccTestingRoutes = require("./routes/fcctesting.js");
@@ -35,14 +36,24 @@ app.route("/").get(function(req, res) {
 fccTestingRoutes(app);
 
 // Routing for API
-apiRoutes(app);
+const CONNECTION_STRING = process.env.DB;
+MongoClient.connect(CONNECTION_STRING, { useNewUrlParser: true }, function(
+  err,
+  client
+) {
+  if (!err) {
+    const collection = client.db("test").collection("stock");
 
-// 404 Not Found Middleware
-app.use(function(req, res, next) {
-  res
-    .status(404)
-    .type("text")
-    .send("Not Found");
+    apiRoutes(app, collection);
+
+    // 404 Not Found Middleware
+    app.use(function(req, res, next) {
+      res
+        .status(404)
+        .type("text")
+        .send("Not Found");
+    });
+  }
 });
 
 // Start our server and tests!
